@@ -1,0 +1,8 @@
+default_config:
+
+mqtt:
+  - sensor:
+      - name: "Temperatura da Sala"
+        unique_id: temperatura_sala
+        state_topic: "casa/sala/temperatura"
+        unit_of_measurement: "°C"

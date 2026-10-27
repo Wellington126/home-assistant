@@ -1,0 +1,3 @@
+# Dados gerados pelo Home Assistant em tempo de execução
+homeassistant/config/*
+!homeassistant/config/configuration.yaml

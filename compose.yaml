@@ -1,0 +1,39 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    volumes:
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    ports: ["1883:1883"]
+    networks: [iot]
+
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    volumes:
+      - ./homeassistant/config:/config
+    ports: ["8123:8123"]
+    depends_on: [mosquitto]
+    networks: [iot]
+
+  gateway-sn:
+    build: ./gateway
+    volumes:
+      - ./gateway/gateway.conf:/opt/gw/gateway.conf:ro
+    ports: ["10000:10000/udp"]
+    depends_on: [mosquitto]
+    networks: [iot]
+
+  subscriber:
+    build: ./subscriber
+    depends_on: [mosquitto]
+    networks: [iot]
+
+  publisher-sn:
+    build: ./publisher
+    depends_on: [gateway-sn]
+    networks: [iot]
+
+networks:
+  iot:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: br-iot
